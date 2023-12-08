@@ -1,0 +1,385 @@
+"cat","variable","value"
+"Nurses",1,1
+"Care assistants",1,0
+"Reeducation",1,0
+"Doctors",1,0
+"Porters",1,0
+"Other",1,0
+"Nurses",2,0
+"Care assistants",2,1
+"Reeducation",2,0
+"Doctors",2,0
+"Porters",2,0
+"Other",2,0
+"Nurses",3,0
+"Care assistants",3,0
+"Reeducation",3,1
+"Doctors",3,0
+"Porters",3,0
+"Other",3,0
+"Nurses",4,0
+"Care assistants",4,0
+"Reeducation",4,0
+"Doctors",4,1
+"Porters",4,0
+"Other",4,0
+"Nurses",5,0
+"Care assistants",5,0
+"Reeducation",5,0
+"Doctors",5,0
+"Porters",5,1
+"Other",5,0
+"Nurses",6,0
+"Care assistants",6,0
+"Reeducation",6,0
+"Doctors",6,0
+"Porters",6,0
+"Other",6,1
+"Nurses",7,1
+"Care assistants",7,1
+"Reeducation",7,0
+"Doctors",7,0
+"Porters",7,0
+"Other",7,0
+"Nurses",8,1
+"Care assistants",8,0
+"Reeducation",8,1
+"Doctors",8,0
+"Porters",8,0
+"Other",8,0
+"Nurses",9,1
+"Care assistants",9,0
+"Reeducation",9,0
+"Doctors",9,1
+"Porters",9,0
+"Other",9,0
+"Nurses",10,1
+"Care assistants",10,0
+"Reeducation",10,0
+"Doctors",10,0
+"Porters",10,1
+"Other",10,0
+"Nurses",11,1
+"Care assistants",11,0
+"Reeducation",11,0
+"Doctors",11,0
+"Porters",11,0
+"Other",11,1
+"Nurses",12,0
+"Care assistants",12,1
+"Reeducation",12,1
+"Doctors",12,0
+"Porters",12,0
+"Other",12,0
+"Nurses",13,0
+"Care assistants",13,1
+"Reeducation",13,0
+"Doctors",13,1
+"Porters",13,0
+"Other",13,0
+"Nurses",14,0
+"Care assistants",14,1
+"Reeducation",14,0
+"Doctors",14,0
+"Porters",14,1
+"Other",14,0
+"Nurses",15,0
+"Care assistants",15,1
+"Reeducation",15,0
+"Doctors",15,0
+"Porters",15,0
+"Other",15,1
+"Nurses",16,0
+"Care assistants",16,0
+"Reeducation",16,1
+"Doctors",16,1
+"Porters",16,0
+"Other",16,0
+"Nurses",17,0
+"Care assistants",17,0
+"Reeducation",17,1
+"Doctors",17,0
+"Porters",17,1
+"Other",17,0
+"Nurses",18,0
+"Care assistants",18,0
+"Reeducation",18,1
+"Doctors",18,0
+"Porters",18,0
+"Other",18,1
+"Nurses",19,0
+"Care assistants",19,0
+"Reeducation",19,0
+"Doctors",19,1
+"Porters",19,1
+"Other",19,0
+"Nurses",20,0
+"Care assistants",20,0
+"Reeducation",20,0
+"Doctors",20,1
+"Porters",20,0
+"Other",20,1
+"Nurses",21,0
+"Care assistants",21,0
+"Reeducation",21,0
+"Doctors",21,0
+"Porters",21,1
+"Other",21,1
+"Nurses",22,1
+"Care assistants",22,1
+"Reeducation",22,1
+"Doctors",22,0
+"Porters",22,0
+"Other",22,0
+"Nurses",23,1
+"Care assistants",23,1
+"Reeducation",23,0
+"Doctors",23,1
+"Porters",23,0
+"Other",23,0
+"Nurses",24,1
+"Care assistants",24,1
+"Reeducation",24,0
+"Doctors",24,0
+"Porters",24,1
+"Other",24,0
+"Nurses",25,1
+"Care assistants",25,1
+"Reeducation",25,0
+"Doctors",25,0
+"Porters",25,0
+"Other",25,1
+"Nurses",26,1
+"Care assistants",26,0
+"Reeducation",26,1
+"Doctors",26,1
+"Porters",26,0
+"Other",26,0
+"Nurses",27,1
+"Care assistants",27,0
+"Reeducation",27,1
+"Doctors",27,0
+"Porters",27,1
+"Other",27,0
+"Nurses",28,1
+"Care assistants",28,0
+"Reeducation",28,1
+"Doctors",28,0
+"Porters",28,0
+"Other",28,1
+"Nurses",29,1
+"Care assistants",29,0
+"Reeducation",29,0
+"Doctors",29,1
+"Porters",29,1
+"Other",29,0
+"Nurses",30,1
+"Care assistants",30,0
+"Reeducation",30,0
+"Doctors",30,1
+"Porters",30,0
+"Other",30,1
+"Nurses",31,1
+"Care assistants",31,0
+"Reeducation",31,0
+"Doctors",31,0
+"Porters",31,1
+"Other",31,1
+"Nurses",32,0
+"Care assistants",32,1
+"Reeducation",32,1
+"Doctors",32,1
+"Porters",32,0
+"Other",32,0
+"Nurses",33,0
+"Care assistants",33,1
+"Reeducation",33,1
+"Doctors",33,0
+"Porters",33,1
+"Other",33,0
+"Nurses",34,0
+"Care assistants",34,1
+"Reeducation",34,1
+"Doctors",34,0
+"Porters",34,0
+"Other",34,1
+"Nurses",35,0
+"Care assistants",35,1
+"Reeducation",35,0
+"Doctors",35,1
+"Porters",35,1
+"Other",35,0
+"Nurses",36,0
+"Care assistants",36,1
+"Reeducation",36,0
+"Doctors",36,1
+"Porters",36,0
+"Other",36,1
+"Nurses",37,0
+"Care assistants",37,1
+"Reeducation",37,0
+"Doctors",37,0
+"Porters",37,1
+"Other",37,1
+"Nurses",38,0
+"Care assistants",38,0
+"Reeducation",38,1
+"Doctors",38,1
+"Porters",38,1
+"Other",38,0
+"Nurses",39,0
+"Care assistants",39,0
+"Reeducation",39,1
+"Doctors",39,1
+"Porters",39,0
+"Other",39,1
+"Nurses",40,0
+"Care assistants",40,0
+"Reeducation",40,1
+"Doctors",40,0
+"Porters",40,1
+"Other",40,1
+"Nurses",41,0
+"Care assistants",41,0
+"Reeducation",41,0
+"Doctors",41,1
+"Porters",41,1
+"Other",41,1
+"Nurses",42,1
+"Care assistants",42,1
+"Reeducation",42,1
+"Doctors",42,1
+"Porters",42,0
+"Other",42,0
+"Nurses",43,1
+"Care assistants",43,1
+"Reeducation",43,1
+"Doctors",43,0
+"Porters",43,1
+"Other",43,0
+"Nurses",44,1
+"Care assistants",44,1
+"Reeducation",44,1
+"Doctors",44,0
+"Porters",44,0
+"Other",44,1
+"Nurses",45,1
+"Care assistants",45,1
+"Reeducation",45,0
+"Doctors",45,1
+"Porters",45,1
+"Other",45,0
+"Nurses",46,1
+"Care assistants",46,1
+"Reeducation",46,0
+"Doctors",46,1
+"Porters",46,0
+"Other",46,1
+"Nurses",47,1
+"Care assistants",47,1
+"Reeducation",47,0
+"Doctors",47,0
+"Porters",47,1
+"Other",47,1
+"Nurses",48,1
+"Care assistants",48,0
+"Reeducation",48,1
+"Doctors",48,1
+"Porters",48,1
+"Other",48,0
+"Nurses",49,1
+"Care assistants",49,0
+"Reeducation",49,1
+"Doctors",49,1
+"Porters",49,0
+"Other",49,1
+"Nurses",50,1
+"Care assistants",50,0
+"Reeducation",50,1
+"Doctors",50,0
+"Porters",50,1
+"Other",50,1
+"Nurses",51,1
+"Care assistants",51,0
+"Reeducation",51,0
+"Doctors",51,1
+"Porters",51,1
+"Other",51,1
+"Nurses",52,0
+"Care assistants",52,1
+"Reeducation",52,1
+"Doctors",52,1
+"Porters",52,1
+"Other",52,0
+"Nurses",53,0
+"Care assistants",53,1
+"Reeducation",53,1
+"Doctors",53,1
+"Porters",53,0
+"Other",53,1
+"Nurses",54,0
+"Care assistants",54,1
+"Reeducation",54,1
+"Doctors",54,0
+"Porters",54,1
+"Other",54,1
+"Nurses",55,0
+"Care assistants",55,1
+"Reeducation",55,0
+"Doctors",55,1
+"Porters",55,1
+"Other",55,1
+"Nurses",56,0
+"Care assistants",56,0
+"Reeducation",56,1
+"Doctors",56,1
+"Porters",56,1
+"Other",56,1
+"Nurses",57,1
+"Care assistants",57,1
+"Reeducation",57,1
+"Doctors",57,1
+"Porters",57,1
+"Other",57,0
+"Nurses",58,1
+"Care assistants",58,1
+"Reeducation",58,1
+"Doctors",58,1
+"Porters",58,0
+"Other",58,1
+"Nurses",59,1
+"Care assistants",59,1
+"Reeducation",59,1
+"Doctors",59,0
+"Porters",59,1
+"Other",59,1
+"Nurses",60,1
+"Care assistants",60,1
+"Reeducation",60,0
+"Doctors",60,1
+"Porters",60,1
+"Other",60,1
+"Nurses",61,1
+"Care assistants",61,0
+"Reeducation",61,1
+"Doctors",61,1
+"Porters",61,1
+"Other",61,1
+"Nurses",62,0
+"Care assistants",62,1
+"Reeducation",62,1
+"Doctors",62,1
+"Porters",62,1
+"Other",62,1
+"Nurses",63,1
+"Care assistants",63,1
+"Reeducation",63,1
+"Doctors",63,1
+"Porters",63,1
+"Other",63,1
+"Nurses",64,0
+"Care assistants",64,0
+"Reeducation",64,0
+"Doctors",64,0
+"Porters",64,0
+"Other",64,0
