@@ -8,103 +8,198 @@ library(reshape2)
 library(RColorBrewer)
 library(ggh4x)
 library(ggtext)
+library(openxlsx)
 
-col_pal = c(brewer.pal(4, "Set1")[-3], "grey30")
+col_pal = c("white", brewer.pal(7, "Dark2"), "grey30")
 
-CP_results = read.csv(here::here("results", "CPSC_60_results.csv")) %>%
-  select(val, lower, upper, group, inter, scenario)
-VC_results = read.csv(here::here("results", "VCSC_60_results.csv")) %>%
-  select(val, lower, upper, group, inter, scenario)
-CP_care_results = read.csv(here::here("results", "CPRandCare_60_results.csv")) %>%
-  select(val, lower, upper, group, inter, scenario)
-CP_pat_results = read.csv(here::here("results", "CPRandPat_60_results.csv")) %>%
-  select(val, lower, upper, group, inter, scenario)
-CP_all_results = read.csv(here::here("results", "CPRandAll_60_results.csv")) %>%
-  select(val, lower, upper, group, inter, scenario)
-VC_care_results = read.csv(here::here("results", "VCRandCare_60_results.csv")) %>%
-  select(val, lower, upper, group, inter, scenario)
-VC_pat_results = read.csv(here::here("results", "VCRandPat_60_results.csv")) %>%
-  select(val, lower, upper, group, inter, scenario)
-VC_all_results = read.csv(here::here("results", "VCRandAll_60_results.csv")) %>%
-  select(val, lower, upper, group, inter, scenario)
+adm_data = read.csv(here::here("data", "toy_admission.csv"), sep=";") %>%
+  select(id, hospitalization, cat)
+adm_data$cat[adm_data$cat == ""] = adm_data$hospitalization[adm_data$cat == ""]
+adm_data = adm_data[,c(1,3)] %>%
+  distinct()
+eq_table = openxlsx::read.xlsx(here::here("data", "cat_groupings.xlsx")) %>%
+  select(cat, cat_ag)
+adm_data = adm_data %>%
+  mutate(group = grepl("PA-", id)) %>%
+  mutate(group = replace(group, group==T, "Patients")) %>%
+  mutate(group = replace(group, group==F, "Staff")) %>%
+  left_join(eq_table, by="cat")
 
-compare2_results = rbind(CP_care_results, CP_pat_results, CP_all_results,
-                         VC_care_results, VC_pat_results, VC_all_results,
-                         CP_results, VC_results) %>%
-  filter(scenario == 2) %>%
-  filter(group != "Care assistants") %>%
-  mutate(SC = sapply(group, FUN = function(x) unlist(strsplit(x, "-"))[2])) %>%
-  mutate(SC = replace(SC, is.na(SC), "Random")) %>%
-  mutate(SC = replace(SC, SC == "Both", "Mixed SC")) %>%
-  mutate(SC = replace(SC, SC == "Contact", "Frequency SC")) %>%
-  mutate(SC = replace(SC, SC == "Duration", "Duration SC")) %>%
-  mutate(SC = factor(SC, levels = c("Duration SC", "Frequency SC", "Mixed SC", "Random"))) %>%
-  mutate(group = replace(group, grepl("atient", group), "Patients")) %>%
-  mutate(group = replace(group, grepl("aff", group), "Staff")) %>%
-  mutate(group = replace(group, grepl("oth", group), "Mixed")) %>%
-  mutate(group = factor(group, levels = c("Staff", "Patients", "Mixed")))
+data_none = read.csv2(here::here("contact", "matContactBuiltSimulatedInterventionbyCatCohorting.csv"))
+data_nurses = read.csv2(here::here("contact", "matContactBuiltSimulatedInterventionbyCatCohorting1_iter_1_scenario_1.csv"))
+data_care = read.csv2(here::here("contact", "matContactBuiltSimulatedInterventionbyCatCohorting2_iter_1_scenario_2.csv"))
+data_reeducation = read.csv2(here::here("contact", "matContactBuiltSimulatedInterventionbyCatCohorting3_iter_1_scenario_3.csv"))
+data_doctors = read.csv2(here::here("contact", "matContactBuiltSimulatedInterventionbyCatCohorting4_iter_1_scenario_4.csv"))
+data_porters = read.csv2(here::here("contact", "matContactBuiltSimulatedInterventionbyCatCohorting5_iter_1_scenario_5.csv"))
+data_other = read.csv2(here::here("contact", "matContactBuiltSimulatedInterventionbyCatCohorting6_iter_1_scenario_6.csv"))
+data_all = read.csv2(here::here("contact", "matContactBuiltSimulatedInterventionbyCatCohorting63_iter_1_scenario_63.csv"))
+data_random = read.csv2(here::here("contact", "matContactBuiltRandomGraphbyCatCohorting.csv"))
 
-pp = ggplot(compare2_results,
-       aes(SC, val, fill = SC)) +
-  facet_nested(~inter+group, scales = "free_x", space="free_x") +
-  geom_col() +
-  geom_hline(yintercept = 0, lty = "dashed") +
-  geom_errorbar(aes(ymax = upper, ymin = lower), linewidth = 0.8, width = 0.5) +
-  scale_fill_manual(values = col_pal) +
-  scale_y_continuous(breaks = seq(0,0.25,0.05)) +
-  coord_cartesian(ylim = c(-0.01, 0.25), clip = "off") +
+# Cohorting baseline ##
+
+data_none = data_none %>%
+  mutate(type = paste0(substr(from, 1, 2), "-", substr(to, 1, 2))) %>%
+  filter(type == "PE-PA" | type == "PA-PE")
+unique_none = c()
+
+for(id in unique(c(data_none$from, data_none$to))){
+  data_id = data_none %>%
+    filter(from == id | to == id)
+  data_id = c(data_id$from, data_id$to) %>%
+    unique() %>%
+    length()
+  unique_none = c(unique_none, data_id)
+}
+
+
+# Cohorting nurses ##
+
+data_nurses = data_nurses %>%
+  mutate(type = paste0(substr(from, 1, 2), "-", substr(to, 1, 2))) %>%
+  filter(type == "PE-PA" | type == "PA-PE")
+unique_nurses = c()
+
+for(id in unique(c(data_nurses$from, data_nurses$to))){
+  data_id = data_nurses %>%
+    filter(from == id | to == id)
+  data_id = c(data_id$from, data_id$to) %>%
+    unique() %>%
+    length()
+  unique_nurses = c(unique_nurses, data_id)
+}
+  
+
+# Cohorting care ##
+
+data_care = data_care %>%
+  mutate(type = paste0(substr(from, 1, 2), "-", substr(to, 1, 2))) %>%
+  filter(type == "PE-PA" | type == "PA-PE")
+unique_care = c()
+
+for(id in unique(c(data_care$from, data_care$to))){
+  data_id = data_care %>%
+    filter(from == id | to == id)
+  data_id = c(data_id$from, data_id$to) %>%
+    unique() %>%
+    length()
+  unique_care = c(unique_care, data_id)
+}
+
+
+# Cohorting reeducation ##
+
+data_reeducation = data_reeducation %>%
+  mutate(type = paste0(substr(from, 1, 2), "-", substr(to, 1, 2))) %>%
+  filter(type == "PE-PA" | type == "PA-PE")
+unique_reeducation = c()
+
+for(id in unique(c(data_reeducation$from, data_reeducation$to))){
+  data_id = data_reeducation %>%
+    filter(from == id | to == id)
+  data_id = c(data_id$from, data_id$to) %>%
+    unique() %>%
+    length()
+  unique_reeducation = c(unique_reeducation, data_id)
+}
+
+
+# Cohorting doctors ##
+
+data_doctors = data_doctors %>%
+  mutate(type = paste0(substr(from, 1, 2), "-", substr(to, 1, 2))) %>%
+  filter(type == "PE-PA" | type == "PA-PE")
+unique_doctors = c()
+
+for(id in unique(c(data_doctors$from, data_doctors$to))){
+  data_id = data_doctors %>%
+    filter(from == id | to == id)
+  data_id = c(data_id$from, data_id$to) %>%
+    unique() %>%
+    length()
+  unique_doctors = c(unique_doctors, data_id)
+}
+
+
+# Cohorting porters ##
+
+data_porters = data_porters %>%
+  mutate(type = paste0(substr(from, 1, 2), "-", substr(to, 1, 2))) %>%
+  filter(type == "PE-PA" | type == "PA-PE")
+unique_porters = c()
+
+for(id in unique(c(data_porters$from, data_porters$to))){
+  data_id = data_porters %>%
+    filter(from == id | to == id)
+  data_id = c(data_id$from, data_id$to) %>%
+    unique() %>%
+    length()
+  unique_porters = c(unique_porters, data_id)
+}
+
+
+# Cohorting other ##
+
+data_other = data_other %>%
+  mutate(type = paste0(substr(from, 1, 2), "-", substr(to, 1, 2))) %>%
+  filter(type == "PE-PA" | type == "PA-PE")
+unique_other = c()
+
+for(id in unique(c(data_other$from, data_other$to))){
+  data_id = data_other %>%
+    filter(from == id | to == id)
+  data_id = c(data_id$from, data_id$to) %>%
+    unique() %>%
+    length()
+  unique_other = c(unique_other, data_id)
+}
+
+
+# Cohorting all ##
+
+data_all = data_all %>%
+  mutate(type = paste0(substr(from, 1, 2), "-", substr(to, 1, 2))) %>%
+  filter(type == "PE-PA" | type == "PA-PE")
+unique_all = c()
+
+for(id in unique(c(data_all$from, data_all$to))){
+  data_id = data_all %>%
+    filter(from == id | to == id)
+  data_id = c(data_id$from, data_id$to) %>%
+    unique() %>%
+    length()
+  unique_all = c(unique_all, data_id)
+}
+
+# Cohorting random ##
+
+data_random = data_random %>%
+  mutate(type = paste0(substr(from, 1, 2), "-", substr(to, 1, 2))) %>%
+  filter(type == "PE-PA" | type == "PA-PE")
+unique_random = c()
+
+for(id in unique(c(data_random$from, data_random$to))){
+  data_id = data_random %>%
+    filter(from == id | to == id)
+  data_id = c(data_id$from, data_id$to) %>%
+    unique() %>%
+    length()
+  unique_random = c(unique_random, data_id)
+}
+
+# Plot together ##
+
+summary_data = data.frame(Baseline = unique_none, `Healthcare assistants` = unique_care, Nurses = unique_nurses,
+                          Other = unique_other, Rehabilitation = unique_reeducation,
+                          Porters = unique_porters, Physicians = unique_doctors,
+                          All = unique_all, Random = unique_random) %>%
+  melt()
+
+ggplot(summary_data) +
+  geom_boxplot(aes(variable, value, fill = variable)) +
+  scale_fill_manual(values = col_pal[c(1,2,5,6,4,7,8,3,9)]) +
   theme_bw() +
-  theme(axis.text.y = element_text(size = 12),
-        axis.title.y = element_text(size = 14),
-        strip.text.x = element_text(size = 12),
-        axis.text.x = element_blank(),
-        axis.ticks.x = element_blank(),
-        legend.text = element_text(size=12),
-        legend.title = element_text(size=12)) +
-  labs(y = "Relative reduction in cumulative incidence", fill="Targeting strategy:", x = "")
+  guides(fill = "none") +
+  labs(x = "Staff reallocation scenario", y = "Number of unique patients per staff") +
+  theme(text = element_text(size=12))
 
-compare2_results = rbind(CP_care_results, CP_pat_results, CP_all_results,
-                         VC_care_results, VC_pat_results, VC_all_results,
-                         CP_results, VC_results) %>%
-  filter(scenario == 10) %>%
-  filter(group != "Care assistants") %>%
-  mutate(SC = sapply(group, FUN = function(x) unlist(strsplit(x, "-"))[2])) %>%
-  mutate(SC = replace(SC, is.na(SC), "Random")) %>%
-  mutate(SC = replace(SC, SC == "Both", "Mixed SC")) %>%
-  mutate(SC = replace(SC, SC == "Contact", "Frequency SC")) %>%
-  mutate(SC = replace(SC, SC == "Duration", "Duration SC")) %>%
-  mutate(SC = factor(SC, levels = c("Duration SC", "Frequency SC", "Mixed SC", "Random"))) %>%
-  mutate(group = replace(group, grepl("atient", group), "Patients")) %>%
-  mutate(group = replace(group, grepl("aff", group), "Staff")) %>%
-  mutate(group = replace(group, grepl("oth", group), "Mixed")) %>%
-  mutate(group = factor(group, levels = c("Staff", "Patients", "Mixed")))
-
-pp2 = ggplot(compare2_results,
-       aes(SC, val, fill = SC)) +
-  facet_nested(~inter+group, scales = "free_x", space="free_x") +
-  geom_col() +
-  geom_hline(yintercept = 0, lty = "dashed") +
-  geom_errorbar(aes(ymax = upper, ymin = lower), linewidth = 0.8, width = 0.5) +
-  scale_fill_manual(values = col_pal) +
-  scale_y_continuous(breaks = seq(0,0.30,0.05)) +
-  coord_cartesian(ylim = c(-0.01, 0.275), clip = "off") +
-  theme_bw() +
-  theme(axis.text.y = element_text(size = 12),
-        axis.title.y = element_text(size = 14),
-        strip.text.x = element_text(size = 12),
-        axis.text.x = element_blank(),
-        axis.ticks.x = element_blank(),
-        legend.text = element_text(size=12),
-        legend.title = element_text(size=12)) +
-  labs(y = "Relative reduction in cumulative incidence", fill="Targeting strategy:", x = "")
-
-
-plot_grid(plot_grid(pp +theme(legend.position = "none"),
-                    pp2 + theme(legend.position = "none"),
-                    ncol = 1,
-                    labels = c("a)", "b)"), hjust = 0),
-          get_legend(pp),
-          ncol = 2, rel_widths = c(1,0.2))
-
-
-ggsave(here::here("figures", "suppfig3.png"), width = 13, height = 14)
+ggsave(here::here("figures", "suppfig3.png"), width = 10)

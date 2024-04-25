@@ -21,6 +21,9 @@
 # RStudio files
 .Rproj.user/
 *.Rproj
+ignore/
+acquisition_old/
+results_save/
 
 # produced vignettes
 vignettes/*.html

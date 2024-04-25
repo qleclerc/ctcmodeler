@@ -43,9 +43,9 @@ cohorting_matrixv = cohorting_matrix %>%
   mutate(value = as.factor(value))
 
 pa = ggplot(cohorting_datav) +
-  geom_col(aes(scenario, val)) +
-  geom_errorbar(aes(scenario, val, ymin = lower, ymax = upper)) +
-  scale_y_continuous(breaks = seq(-0.4,0.4,0.1)) +
+  geom_col(aes(scenario, val), fill="grey60") +
+  geom_errorbar(aes(scenario, val, ymin = lower, ymax = upper), width=0.7) +
+  scale_y_continuous(breaks = seq(-0.4,0.7,0.2)) +
   theme_bw() +
   labs(x = "" , y = "Relative reduction in\ncumulative incidence") +
   theme(axis.title.x = element_blank(),
@@ -57,10 +57,13 @@ pa = ggplot(cohorting_datav) +
 pb = ggplot(cohorting_matrixv) +
   geom_point(aes(variable, cat, fill = value),
              pch = 22, size = 8) +
-  scale_fill_manual(values = c("white", col_pal[c(7,2,3,4,6,5)])) +
+  scale_fill_manual(values = c("white", col_pal[c(4,1,3,7,6,5)])) +
   theme_bw() +
-  labs(x = "Scenario", y = "Categories reallocated") +
-  guides(fill = "none")
+  labs(y = "Categories reallocated") +
+  guides(fill = "none") +
+  theme(axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
 
 
 
@@ -77,9 +80,9 @@ cohorting_matrixv = cohorting_matrix %>%
   mutate(value = as.factor(value))
 
 pc = ggplot(cohorting_datav) +
-  geom_col(aes(scenario, rel_val)) +
-  geom_errorbar(aes(scenario, rel_val, ymin = rel_lower, ymax = rel_upper)) +
-  scale_y_continuous(breaks = seq(-0.003,0.003,0.001)) +
+  geom_col(aes(scenario, rel_val), fill="grey60") +
+  geom_errorbar(aes(scenario, rel_val, ymin = rel_lower, ymax = rel_upper), width = 0.7) +
+  scale_y_continuous(breaks = seq(-0.008,0.011,0.002)) +
   theme_bw() +
   labs(x = "" , y = "Relative reduction in cumulative\nincidence per person reallocated") +
   theme(axis.title.x = element_blank(),
@@ -91,10 +94,13 @@ pc = ggplot(cohorting_datav) +
 pd = ggplot(cohorting_matrixv) +
   geom_point(aes(variable, cat, fill = value),
              pch = 22, size = 8) +
-  scale_fill_manual(values = c("white", col_pal[c(7,2,3,4,6,5)])) +
+  scale_fill_manual(values = c("white", col_pal[c(4,1,3,7,6,5)])) +
   theme_bw() +
-  labs(x = "Scenario", y = "Categories reallocated") +
-  guides(fill = "none")
+  labs(y = "Categories reallocated") +
+  guides(fill = "none") +
+  theme(axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
 
 plot_grid(pa, pb, pc, pd, ncol = 1, rel_heights = c(1,0.8,1,0.8), labels = c("a)", "", "b)", ""))
 

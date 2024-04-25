@@ -10,7 +10,7 @@ library(ggh4x)
 library(ggtext)
 library(openxlsx)
 
-col_pal = c("white", brewer.pal(7, "Dark2"), "grey30")
+col_pal = brewer.pal(7, "Dark2")
 
 adm_data = read.csv(here::here("data", "toy_admission.csv"), sep=";") %>%
   select(id, hospitalization, cat)
@@ -19,187 +19,115 @@ adm_data = adm_data[,c(1,3)] %>%
   distinct()
 eq_table = openxlsx::read.xlsx(here::here("data", "cat_groupings.xlsx")) %>%
   select(cat, cat_ag)
+
 adm_data = adm_data %>%
-  mutate(group = grepl("PA-", id)) %>%
-  mutate(group = replace(group, group==T, "Patients")) %>%
-  mutate(group = replace(group, group==F, "Staff")) %>%
-  left_join(eq_table, by="cat")
+  left_join(eq_table, by = "cat") %>%
+  count(cat_ag) %>%
+  rename(cat = cat_ag)
 
-data_none = read.csv2(here::here("contact", "matContactBuiltSimulatedInterventionbyCatCohorting.csv"))
-data_nurses = read.csv2(here::here("contact", "matContactBuiltSimulatedInterventionbyCatCohorting1_iter_1_scenario_1.csv"))
-data_care = read.csv2(here::here("contact", "matContactBuiltSimulatedInterventionbyCatCohorting2_iter_1_scenario_2.csv"))
-data_reeducation = read.csv2(here::here("contact", "matContactBuiltSimulatedInterventionbyCatCohorting3_iter_1_scenario_3.csv"))
-data_doctors = read.csv2(here::here("contact", "matContactBuiltSimulatedInterventionbyCatCohorting4_iter_1_scenario_4.csv"))
-data_porters = read.csv2(here::here("contact", "matContactBuiltSimulatedInterventionbyCatCohorting5_iter_1_scenario_5.csv"))
-data_other = read.csv2(here::here("contact", "matContactBuiltSimulatedInterventionbyCatCohorting6_iter_1_scenario_6.csv"))
-data_all = read.csv2(here::here("contact", "matContactBuiltSimulatedInterventionbyCatCohorting63_iter_1_scenario_63.csv"))
-data_random = read.csv2(here::here("contact", "matContactBuiltRandomGraphbyCatCohorting.csv"))
+cohorting_data = read.csv(here::here("results", "cohorting_results.csv"))
+cohorting_matrix = read.csv(here::here("results", "cohorting_matrix.csv"))
 
-# Cohorting baseline ##
+cohorting_numbers = cohorting_matrix %>%
+  left_join(adm_data, by = "cat") %>%
+  mutate(n = n*value) %>%
+  group_by(variable) %>%
+  summarise(n=sum(n)) %>%
+  rename(scenario = variable) %>%
+  mutate(n = replace(n, n==0, max(n)))
 
-data_none = data_none %>%
-  mutate(type = paste0(substr(from, 1, 2), "-", substr(to, 1, 2))) %>%
-  filter(type == "PE-PA" | type == "PA-PE")
-unique_none = c()
-
-for(id in unique(c(data_none$from, data_none$to))){
-  data_id = data_none %>%
-    filter(from == id | to == id)
-  data_id = c(data_id$from, data_id$to) %>%
-    unique() %>%
-    length()
-  unique_none = c(unique_none, data_id)
-}
+cohorting_data = cohorting_data %>%
+  left_join(cohorting_numbers, by = "scenario") %>%
+  mutate(rel_val = val/n,
+         rel_lower = lower/n,
+         rel_upper = upper/n)
 
 
-# Cohorting nurses ##
+cohorting_matrix$value[which(cohorting_matrix$value!=0 & cohorting_matrix$cat=="Nurses")] = 1
+cohorting_matrix$value[which(cohorting_matrix$value!=0 & cohorting_matrix$cat=="Care assistants")] = 2
+cohorting_matrix$value[which(cohorting_matrix$value!=0 & cohorting_matrix$cat=="Reeducation")] = 3
+cohorting_matrix$value[which(cohorting_matrix$value!=0 & cohorting_matrix$cat=="Doctors")] = 4
+cohorting_matrix$value[which(cohorting_matrix$value!=0 & cohorting_matrix$cat=="Porters")] = 5
+cohorting_matrix$value[which(cohorting_matrix$value!=0 & cohorting_matrix$cat=="Other")] = 6
 
-data_nurses = data_nurses %>%
-  mutate(type = paste0(substr(from, 1, 2), "-", substr(to, 1, 2))) %>%
-  filter(type == "PE-PA" | type == "PA-PE")
-unique_nurses = c()
-
-for(id in unique(c(data_nurses$from, data_nurses$to))){
-  data_id = data_nurses %>%
-    filter(from == id | to == id)
-  data_id = c(data_id$from, data_id$to) %>%
-    unique() %>%
-    length()
-  unique_nurses = c(unique_nurses, data_id)
-}
-  
-
-# Cohorting care ##
-
-data_care = data_care %>%
-  mutate(type = paste0(substr(from, 1, 2), "-", substr(to, 1, 2))) %>%
-  filter(type == "PE-PA" | type == "PA-PE")
-unique_care = c()
-
-for(id in unique(c(data_care$from, data_care$to))){
-  data_id = data_care %>%
-    filter(from == id | to == id)
-  data_id = c(data_id$from, data_id$to) %>%
-    unique() %>%
-    length()
-  unique_care = c(unique_care, data_id)
-}
+cohorting_matrix[cohorting_matrix=="Doctors"] = "Physicians"
+cohorting_data[cohorting_data=="Doctors"] = "Physicians"
+cohorting_matrix[cohorting_matrix=="Reeducation"] = "Rehabilitation"
+cohorting_data[cohorting_data=="Reeducation"] = "Rehabilitation"
+cohorting_matrix[cohorting_matrix=="Care assistants"] = "Healthcare asst."
+cohorting_data[cohorting_data=="Care assistants"] = "Healthcare asst."
 
 
-# Cohorting reeducation ##
+# BY VALUE ##########
+cohorting_datav = cohorting_data %>%
+  arrange(desc(val)) %>%
+  mutate(scenario = factor(scenario, levels = unique(scenario)))
 
-data_reeducation = data_reeducation %>%
-  mutate(type = paste0(substr(from, 1, 2), "-", substr(to, 1, 2))) %>%
-  filter(type == "PE-PA" | type == "PA-PE")
-unique_reeducation = c()
+cohorting_matrixv = cohorting_matrix %>%
+  filter(variable %in% unique(cohorting_datav$scenario)) %>%
+  mutate(variable = factor(variable, levels = levels(cohorting_datav$scenario))) %>%
+  mutate(cat = factor(cat, levels = rev(unique(cat)))) %>%
+  mutate(value = as.factor(value))
 
-for(id in unique(c(data_reeducation$from, data_reeducation$to))){
-  data_id = data_reeducation %>%
-    filter(from == id | to == id)
-  data_id = c(data_id$from, data_id$to) %>%
-    unique() %>%
-    length()
-  unique_reeducation = c(unique_reeducation, data_id)
-}
-
-
-# Cohorting doctors ##
-
-data_doctors = data_doctors %>%
-  mutate(type = paste0(substr(from, 1, 2), "-", substr(to, 1, 2))) %>%
-  filter(type == "PE-PA" | type == "PA-PE")
-unique_doctors = c()
-
-for(id in unique(c(data_doctors$from, data_doctors$to))){
-  data_id = data_doctors %>%
-    filter(from == id | to == id)
-  data_id = c(data_id$from, data_id$to) %>%
-    unique() %>%
-    length()
-  unique_doctors = c(unique_doctors, data_id)
-}
-
-
-# Cohorting porters ##
-
-data_porters = data_porters %>%
-  mutate(type = paste0(substr(from, 1, 2), "-", substr(to, 1, 2))) %>%
-  filter(type == "PE-PA" | type == "PA-PE")
-unique_porters = c()
-
-for(id in unique(c(data_porters$from, data_porters$to))){
-  data_id = data_porters %>%
-    filter(from == id | to == id)
-  data_id = c(data_id$from, data_id$to) %>%
-    unique() %>%
-    length()
-  unique_porters = c(unique_porters, data_id)
-}
-
-
-# Cohorting other ##
-
-data_other = data_other %>%
-  mutate(type = paste0(substr(from, 1, 2), "-", substr(to, 1, 2))) %>%
-  filter(type == "PE-PA" | type == "PA-PE")
-unique_other = c()
-
-for(id in unique(c(data_other$from, data_other$to))){
-  data_id = data_other %>%
-    filter(from == id | to == id)
-  data_id = c(data_id$from, data_id$to) %>%
-    unique() %>%
-    length()
-  unique_other = c(unique_other, data_id)
-}
-
-
-# Cohorting all ##
-
-data_all = data_all %>%
-  mutate(type = paste0(substr(from, 1, 2), "-", substr(to, 1, 2))) %>%
-  filter(type == "PE-PA" | type == "PA-PE")
-unique_all = c()
-
-for(id in unique(c(data_all$from, data_all$to))){
-  data_id = data_all %>%
-    filter(from == id | to == id)
-  data_id = c(data_id$from, data_id$to) %>%
-    unique() %>%
-    length()
-  unique_all = c(unique_all, data_id)
-}
-
-# Cohorting random ##
-
-data_random = data_random %>%
-  mutate(type = paste0(substr(from, 1, 2), "-", substr(to, 1, 2))) %>%
-  filter(type == "PE-PA" | type == "PA-PE")
-unique_random = c()
-
-for(id in unique(c(data_random$from, data_random$to))){
-  data_id = data_random %>%
-    filter(from == id | to == id)
-  data_id = c(data_id$from, data_id$to) %>%
-    unique() %>%
-    length()
-  unique_random = c(unique_random, data_id)
-}
-
-# Plot together ##
-
-summary_data = data.frame(Baseline = unique_none, `Healthcare assistants` = unique_care, Nurses = unique_nurses,
-                          Other = unique_other, Rehabilitation = unique_reeducation,
-                          Porters = unique_porters, Physicians = unique_doctors,
-                          All = unique_all, Random = unique_random) %>%
-  melt()
-
-ggplot(summary_data) +
-  geom_boxplot(aes(variable, value, fill = variable)) +
-  scale_fill_manual(values = col_pal[c(1,3,8,6,4,7,5,2,9)]) +
+pa = ggplot(cohorting_datav) +
+  geom_col(aes(scenario, val), fill="grey60") +
+  geom_errorbar(aes(scenario, val, ymin = lower, ymax = upper), width=0.7) +
+  scale_y_continuous(breaks = seq(-0.4,0.7,0.2)) +
   theme_bw() +
-  guides(fill = "none") +
-  labs(x = "Staff reallocation scenario", y = "Number of unique patients per staff") +
-  theme(text = element_text(size=12))
+  labs(x = "" , y = "Relative reduction in\ncumulative incidence") +
+  theme(axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        plot.margin = margin(t=5,l=43,r=5,b=0))
 
-ggsave(here::here("figures", "suppfig2.png"), width = 10)
+
+pb = ggplot(cohorting_matrixv) +
+  geom_point(aes(variable, cat, fill = value),
+             pch = 22, size = 3) +
+  scale_fill_manual(values = c("white", col_pal[c(4,1,3,7,6,5)])) +
+  theme_bw() +
+  labs(y = "Categories reallocated") +
+  guides(fill = "none") +
+  theme(axis.text.x = element_text(size=8, angle = 45, hjust = 1)) +
+  theme(axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
+
+
+# BY VALUE ##########
+cohorting_datav = cohorting_data %>%
+  arrange(desc(rel_val)) %>%
+  mutate(scenario = factor(scenario, levels = unique(scenario)))
+
+cohorting_matrixv = cohorting_matrix %>%
+  filter(variable %in% unique(cohorting_datav$scenario)) %>%
+  mutate(variable = factor(variable, levels = levels(cohorting_datav$scenario))) %>%
+  mutate(cat = factor(cat, levels = rev(unique(cat)))) %>%
+  mutate(value = as.factor(value))
+
+pc = ggplot(cohorting_datav) +
+  geom_col(aes(scenario, rel_val), fill="grey60") +
+  geom_errorbar(aes(scenario, rel_val, ymin = rel_lower, ymax = rel_upper), width = 0.7) +
+  scale_y_continuous(breaks = seq(-0.010,0.011,0.002)) +
+  theme_bw() +
+  labs(x = "" , y = "Relative reduction in\ncumulative incidence") +
+  theme(axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        plot.margin = margin(t=5,l=32,r=5,b=0))
+
+
+pd = ggplot(cohorting_matrixv) +
+  geom_point(aes(variable, cat, fill = value),
+             pch = 22, size = 3) +
+  scale_fill_manual(values = c("white", col_pal[c(4,1,3,7,6,5)])) +
+  theme_bw() +
+  labs(y = "Categories reallocated") +
+  guides(fill = "none")  +
+  theme(axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
+
+plot_grid(pa, pb, pc, pd, ncol = 1, rel_heights = c(1,0.8,1,0.8), labels = c("a)", "", "b)", ""))
+
+ggsave(here::here("figures", "suppfig2.png"), width = 10, height = 10)

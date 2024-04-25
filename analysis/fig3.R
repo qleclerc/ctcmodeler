@@ -36,46 +36,60 @@ compare_data = read.csv(here::here("results", "compare_results.csv")) %>%
   
   
 
-pb = ggplot(compare_data, aes(scenario, val, colour = group)) +
+ggplot(compare_data, aes(scenario, val, colour = group)) +
   geom_line(linewidth = 1.2) +
   geom_hline(yintercept = 0, lty = "dashed") +
-  geom_hline(yintercept = cohorting_data$val[2], lty = "dashed", linewidth = 1, colour = col_pal[2]) +
-  geom_hline(yintercept = cohorting_data$val[7], lty = "dashed", linewidth = 1, colour = col_pal[1]) +
-  geom_hline(yintercept = cohorting_data$val[1], lty = "dashed", linewidth = 1, colour = col_pal[7]) +
+  geom_hline(yintercept = cohorting_data$val[2], lty = "dashed", linewidth = 1, colour = col_pal[1]) +
+  geom_hline(yintercept = cohorting_data$val[1], lty = "dashed", linewidth = 1, colour = col_pal[4]) +
   geom_errorbar(aes(ymax = upper, ymin = lower), linewidth = 0.8, width = 0.5) +
   facet_wrap(~inter) +
+  geom_text(aes(x=12.2, y = 0.34, label="Healthcare asst."), fontface="bold", colour = col_pal[1],
+            data=data.frame(inter="Vaccination"), inherit.aes = F, ) +
+  geom_text(aes(x=11.25, y = 0.25, label="Nurses"), fontface="bold", colour = col_pal[4],
+            data=data.frame(inter="Vaccination"), inherit.aes = F, ) +
+  geom_text(aes(x=11.07, y = 0.045, label="Other"), fontface="bold", colour = col_pal[5],
+            data=data.frame(inter="Vaccination"), inherit.aes = F, ) +
+  geom_text(aes(x=11.95, y = 0.02, label="Rehabilitation"), fontface="bold", colour = col_pal[3],
+            data=data.frame(inter="Vaccination"), inherit.aes = F, ) +
+  geom_text(aes(x=11.65, y = -0.03, label="Physicians"), fontface="bold", colour = col_pal[7],
+            data=data.frame(inter="Vaccination"), inherit.aes = F, ) +
+  geom_text(aes(x=11.25, y = -0.005, label="Porters"), fontface="bold", colour = col_pal[6],
+            data=data.frame(inter="Vaccination"), inherit.aes = F, ) +
   scale_x_continuous(breaks = seq(2,10,2)) +
-  coord_cartesian(ylim = c(-0.03,0.4)) +
+  coord_cartesian(ylim = c(-0.03,0.42), xlim = c(2,10), clip="off") +
   scale_y_continuous(breaks = seq(-0.1,0.4,0.1)) +
-  scale_colour_manual(values = col_pal[c(2,7,5,4,6,3)]) +
+  scale_colour_manual(values = col_pal[c(1,4,5,7,6,3)]) +
   theme_bw() +
   theme(strip.text = element_text(size = 12),
         axis.text = element_text(size = 12),
-        axis.title = element_text(size = 12))+
-  labs(x = "Assumed fold reduction in transmission probability",
-       y = "Relative reduction in cumulative incidence", colour = "Staff category:")
-
-pa = ggplot(cohorting_data,
-            aes(group, val, fill = group)) +
-  facet_grid(~inter) +
-  geom_col() +
-  geom_errorbar(aes(ymax = upper+0.01, ymin = lower-0.01), linewidth = 0.8, width = 0.5) +
-  geom_hline(yintercept = 0, lty = "dashed") +
-  coord_cartesian(ylim = c(-0.1,0.4)) +
-  scale_y_continuous(breaks = seq(-0.1,0.4,0.1)) +
-  scale_fill_manual(values = col_pal[c(4,6,7,3,5,2,1)]) +
-  theme_bw() + 
-  theme(legend.text = element_text(size = 12),
-        legend.title = element_text(size = 12),
-        strip.text = element_text(size = 12),
         axis.title = element_text(size = 12),
-        axis.text.y = element_text(size = 12),
-        axis.text.x = element_text(size = 12, angle = 30, hjust = 1)) +
-  labs(x = "Staff category reallocated", y = "Relative reduction in cumulative incidence")
+        plot.margin = margin(t=5,l=5,r=90,b=5))+
+  labs(x = "Assumed fold reduction in transmission probability",
+       y = "Relative reduction in cumulative incidence", colour = "Staff category:") +
+  guides(colour="none")
+
+# pa = ggplot(cohorting_data,
+#             aes(group, val, fill = group)) +
+#   facet_grid(~inter) +
+#   geom_col() +
+#   geom_errorbar(aes(ymax = upper+0.01, ymin = lower-0.01), linewidth = 0.8, width = 0.5) +
+#   geom_hline(yintercept = 0, lty = "dashed") +
+#   coord_cartesian(ylim = c(-0.1,0.4)) +
+#   scale_y_continuous(breaks = seq(-0.1,0.4,0.1)) +
+#   scale_fill_manual(values = col_pal[c(7,6,4,3,5,1,2)]) +
+#   theme_bw() + 
+#   theme(legend.text = element_text(size = 12),
+#         legend.title = element_text(size = 12),
+#         strip.text = element_text(size = 12),
+#         axis.title = element_text(size = 12),
+#         axis.text.y = element_text(size = 12),
+#         axis.text.x = element_text(size = 12, angle = 30, hjust = 1)) +
+#   labs(x = "Staff category reallocated", y = "Relative reduction in cumulative incidence")
 
 
-plot_grid(pb+theme(legend.position = "none"),
-          get_legend(pa+labs(fill="Staff category:")),
-          nrow = 1, rel_widths = c(1,0.25))
+# plot_grid(pb+theme(legend.position = "none"),
+#           get_legend(pa+labs(fill="Staff category:")),
+#           nrow = 1, rel_widths = c(1,0.25))
 
 ggsave(here::here("figures", "fig3.png"), width = 8, height = 4)
+

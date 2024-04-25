@@ -11,29 +11,23 @@ library(ggtext)
 
 col_pal = c(brewer.pal(4, "Set1")[-3], "grey30")
 
-CP_results = read.csv(here::here("results", "CPSC_20_results.csv")) %>%
+CP_results = read.csv(here::here("results", "CPSC_60_results.csv")) %>%
   select(val, lower, upper, group, inter, scenario)
-VC_results = read.csv(here::here("results", "VCSC_20_results.csv")) %>%
+VC_results = read.csv(here::here("results", "VCSC_60_results.csv")) %>%
   select(val, lower, upper, group, inter, scenario)
-CP_care_results = read.csv(here::here("results", "CPRandCare_20_results.csv")) %>%
+CP_pat_results = read.csv(here::here("results", "CPRandPat_60_results.csv")) %>%
   select(val, lower, upper, group, inter, scenario)
-CP_pat_results = read.csv(here::here("results", "CPRandPat_20_results.csv")) %>%
+CP_all_results = read.csv(here::here("results", "CPRandAll_60_results.csv")) %>%
   select(val, lower, upper, group, inter, scenario)
-CP_all_results = read.csv(here::here("results", "CPRandAll_20_results.csv")) %>%
+VC_pat_results = read.csv(here::here("results", "VCRandPat_60_results.csv")) %>%
   select(val, lower, upper, group, inter, scenario)
-VC_care_results = read.csv(here::here("results", "VCRandCare_20_results.csv")) %>%
-  select(val, lower, upper, group, inter, scenario)
-VC_pat_results = read.csv(here::here("results", "VCRandPat_20_results.csv")) %>%
-  select(val, lower, upper, group, inter, scenario)
-VC_all_results = read.csv(here::here("results", "VCRandAll_20_results.csv")) %>%
+VC_all_results = read.csv(here::here("results", "VCRandAll_60_results.csv")) %>%
   select(val, lower, upper, group, inter, scenario)
 
-
-compare2_results = rbind(CP_care_results, CP_pat_results, CP_all_results,
-                         VC_care_results, VC_pat_results, VC_all_results,
+compare2_results = rbind(CP_pat_results, CP_all_results,
+                         VC_pat_results, VC_all_results,
                          CP_results, VC_results) %>%
-  filter(scenario == 6) %>%
-  filter(group != "Care assistants") %>%
+  filter(scenario == 2) %>%
   mutate(SC = sapply(group, FUN = function(x) unlist(strsplit(x, "-"))[2])) %>%
   mutate(SC = replace(SC, is.na(SC), "Random")) %>%
   mutate(SC = replace(SC, SC == "Both", "Mixed SC")) %>%
@@ -45,15 +39,15 @@ compare2_results = rbind(CP_care_results, CP_pat_results, CP_all_results,
   mutate(group = replace(group, grepl("oth", group), "Mixed")) %>%
   mutate(group = factor(group, levels = c("Staff", "Patients", "Mixed")))
 
-pp=ggplot(compare2_results,
+pp = ggplot(compare2_results,
        aes(SC, val, fill = SC)) +
   facet_nested(~inter+group, scales = "free_x", space="free_x") +
   geom_col() +
   geom_hline(yintercept = 0, lty = "dashed") +
   geom_errorbar(aes(ymax = upper, ymin = lower), linewidth = 0.8, width = 0.5) +
   scale_fill_manual(values = col_pal) +
-  scale_y_continuous(breaks = seq(-0.05,0.35,0.05)) +
-  coord_cartesian(ylim = c(-0.05, 0.35), clip = "off") +
+  scale_y_continuous(breaks = seq(0,0.25,0.05)) +
+  coord_cartesian(ylim = c(-0.01, 0.25), clip = "off") +
   theme_bw() +
   theme(axis.text.y = element_text(size = 12),
         axis.title.y = element_text(size = 14),
@@ -64,30 +58,10 @@ pp=ggplot(compare2_results,
         legend.title = element_text(size=12)) +
   labs(y = "Relative reduction in cumulative incidence", fill="Targeting strategy:", x = "")
 
-
-CP_results = read.csv(here::here("results", "CPSC_100_results.csv")) %>%
-  select(val, lower, upper, group, inter, scenario)
-VC_results = read.csv(here::here("results", "VCSC_100_results.csv")) %>%
-  select(val, lower, upper, group, inter, scenario)
-CP_care_results = read.csv(here::here("results", "CPRandCare_100_results.csv")) %>%
-  select(val, lower, upper, group, inter, scenario)
-CP_pat_results = read.csv(here::here("results", "CPRandPat_100_results.csv")) %>%
-  select(val, lower, upper, group, inter, scenario)
-CP_all_results = read.csv(here::here("results", "CPRandAll_100_results.csv")) %>%
-  select(val, lower, upper, group, inter, scenario)
-VC_care_results = read.csv(here::here("results", "VCRandCare_100_results.csv")) %>%
-  select(val, lower, upper, group, inter, scenario)
-VC_pat_results = read.csv(here::here("results", "VCRandPat_100_results.csv")) %>%
-  select(val, lower, upper, group, inter, scenario)
-VC_all_results = read.csv(here::here("results", "VCRandAll_100_results.csv")) %>%
-  select(val, lower, upper, group, inter, scenario)
-
-
-compare2_results = rbind(CP_care_results, CP_pat_results, CP_all_results,
-                         VC_care_results, VC_pat_results, VC_all_results,
+compare2_results = rbind(CP_pat_results, CP_all_results,
+                         VC_pat_results, VC_all_results,
                          CP_results, VC_results) %>%
-  filter(scenario == 6) %>%
-  filter(group != "Care assistants") %>%
+  filter(scenario == 10) %>%
   mutate(SC = sapply(group, FUN = function(x) unlist(strsplit(x, "-"))[2])) %>%
   mutate(SC = replace(SC, is.na(SC), "Random")) %>%
   mutate(SC = replace(SC, SC == "Both", "Mixed SC")) %>%
@@ -106,8 +80,8 @@ pp2 = ggplot(compare2_results,
   geom_hline(yintercept = 0, lty = "dashed") +
   geom_errorbar(aes(ymax = upper, ymin = lower), linewidth = 0.8, width = 0.5) +
   scale_fill_manual(values = col_pal) +
-  scale_y_continuous(breaks = seq(0,0.35,0.05)) +
-  coord_cartesian(ylim = c(-0.01, 0.35), clip = "off") +
+  scale_y_continuous(breaks = seq(0,0.30,0.05)) +
+  coord_cartesian(ylim = c(-0.01, 0.275), clip = "off") +
   theme_bw() +
   theme(axis.text.y = element_text(size = 12),
         axis.title.y = element_text(size = 14),
@@ -125,5 +99,6 @@ plot_grid(plot_grid(pp +theme(legend.position = "none"),
                     labels = c("a)", "b)"), hjust = 0),
           get_legend(pp),
           ncol = 2, rel_widths = c(1,0.2))
+
 
 ggsave(here::here("figures", "suppfig4.png"), width = 13, height = 14)
