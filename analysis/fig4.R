@@ -21,6 +21,9 @@ sc_files = list.files(here::here("interventions"))
 sc_data = data.frame()
 
 for(f in sc_files){
+  
+  if(grepl("tm_", f)) next
+  
   dat = read.csv(here::here("interventions", f), sep=";")[,c(2:3)] %>%
     rename(id = name)
   if(grepl("tc_", f)) dat = cbind(dat, type = "Frequency SC")

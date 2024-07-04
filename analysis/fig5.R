@@ -12,24 +12,20 @@ library(ggtext)
 col_pal = c(brewer.pal(4, "Set1")[-3], "grey30")
 
 CP_results = read.csv(here::here("results", "CPSC_60_results.csv")) %>%
-  select(val, lower, upper, group, inter, scenario)
+  select(val, lower, upper, group, inter, scenario, pval)
 VC_results = read.csv(here::here("results", "VCSC_60_results.csv")) %>%
-  select(val, lower, upper, group, inter, scenario)
-CP_care_results = read.csv(here::here("results", "CPRandCare_60_results.csv")) %>%
-  select(val, lower, upper, group, inter, scenario)
+  select(val, lower, upper, group, inter, scenario, pval)
 CP_pat_results = read.csv(here::here("results", "CPRandPat_60_results.csv")) %>%
-  select(val, lower, upper, group, inter, scenario)
+  select(val, lower, upper, group, inter, scenario, pval)
 CP_all_results = read.csv(here::here("results", "CPRandAll_60_results.csv")) %>%
-  select(val, lower, upper, group, inter, scenario)
-VC_care_results = read.csv(here::here("results", "VCRandCare_60_results.csv")) %>%
-  select(val, lower, upper, group, inter, scenario)
+  select(val, lower, upper, group, inter, scenario, pval)
 VC_pat_results = read.csv(here::here("results", "VCRandPat_60_results.csv")) %>%
-  select(val, lower, upper, group, inter, scenario)
+  select(val, lower, upper, group, inter, scenario, pval)
 VC_all_results = read.csv(here::here("results", "VCRandAll_60_results.csv")) %>%
-  select(val, lower, upper, group, inter, scenario)
+  select(val, lower, upper, group, inter, scenario, pval)
 
-compare2_results = rbind(CP_care_results, CP_pat_results, CP_all_results,
-                         VC_care_results, VC_pat_results, VC_all_results,
+compare2_results = rbind(CP_pat_results, CP_all_results,
+                         VC_pat_results, VC_all_results,
                          CP_results, VC_results) %>%
   filter(scenario == 6) %>%
   filter(group != "Care assistants") %>%

@@ -45,6 +45,7 @@ cohorting_matrixv = cohorting_matrix %>%
 pa = ggplot(cohorting_datav) +
   geom_col(aes(scenario, val), fill="grey60") +
   geom_errorbar(aes(scenario, val, ymin = lower, ymax = upper), width=0.7) +
+  geom_text(aes(scenario, 0.05, label = ifelse(pval>0.05, "n.s.", ""))) +
   scale_y_continuous(breaks = seq(-0.4,0.7,0.2)) +
   theme_bw() +
   labs(x = "" , y = "Relative reduction in\ncumulative incidence") +
@@ -82,6 +83,7 @@ cohorting_matrixv = cohorting_matrix %>%
 pc = ggplot(cohorting_datav) +
   geom_col(aes(scenario, rel_val), fill="grey60") +
   geom_errorbar(aes(scenario, rel_val, ymin = rel_lower, ymax = rel_upper), width = 0.7) +
+  geom_text(aes(scenario, 0.002, label = ifelse(pval>0.05, "n.s.", ""))) +
   scale_y_continuous(breaks = seq(-0.008,0.011,0.002)) +
   theme_bw() +
   labs(x = "" , y = "Relative reduction in cumulative\nincidence per person reallocated") +

@@ -12,8 +12,6 @@ distrib_all = read.csv(here::here("results", "validation_contacts.csv"))
 distrib_all$date_posix = sapply(distrib_all$date_posix, function(x) if(nchar(x) < 5) paste0("0",x) else x)
 all_incidence_m = read.csv(here::here("results", "incidence_validation.csv")) %>%
   mutate(date = as_date(date))
-all_incidence_traj = read.csv(here::here("results", "incidence_traj.csv")) %>%
-  mutate(date = as_date(date))
 
 pa = ggplot(distrib_all) +
   geom_ribbon(aes(date_posix, ymin = q25, ymax = q75, fill = network, group = interaction(type, network)),
@@ -32,7 +30,8 @@ pa = ggplot(distrib_all) +
         legend.title = element_text(size = 12),
         axis.text.y = element_text(size = 12),
         axis.title = element_text(size = 12),
-        strip.text = element_text(size = 12))  +
+        strip.text = element_text(size = 12),
+        legend.position = "bottom")  +
   labs(x = "Hours", y = "Median number of unique contacts", colour = "Network:", fill = "Network:")
 
 
@@ -69,7 +68,8 @@ all_incidence_m %>%
   mean
 
 plot_grid(pa, pb, ncol=1,
-          labels = c("a)", "b)"), hjust = 0)
+          labels = c("a)", "b)"), hjust = 0, vjust = c(1, 0),
+          rel_heights = c(1,0.8))
 
 ggsave(here::here("figures", "fig1.png"), height = 8, width = 8)
 
