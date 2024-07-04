@@ -1,4 +1,4 @@
-# Using contact network dynamics to implement efficient interventions against pathogen spread in hospital settings
+# Using contact network dynamics to implement efficient interventions against pathogen spread in hospital settings: A modelling study
 Quentin J Leclerc $^{1,2,3}$ *+, Audrey Duval $^{1}$ *,  Didier Guillemot $^{1,2}$ , Lulla Opatowski $^{1,3}$ **, Laura Temime $^{2}$ **
 
 $^{1}$ Epidemiology and Modelling of Antimicrobial Resistance, Institut Pasteur, France  
@@ -9,7 +9,9 @@ $^{3}$ Université de Versailles Saint-Quentin-en-Yvelines/INSERM, France
 ** these authors contributed equally  
 \+ quentin.leclerc@pasteur.fr  
 
-This repository contains the model results and analysis code for the paper "Using contact network dynamics to implement efficient interventions against pathogen spread in hospital settings".
+This repository contains the model results and analysis code for the paper "Using contact network dynamics to implement efficient interventions against pathogen spread in hospital settings: A modelling study".
+
+Please note that this project makes use of data previously collected as part of the i-Bird study. Full details are available in "Detailed Contact Data and the Dissemination of Staphylococcus aureus in Hospitals" (Obadia et al, PLOS Computational Biology 2015).
 
 <br/>
 
